@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           child: child!,
         );
       }),
-      home: ProductsView(),
+      home: const ProductsView(),
     );
   }
 }
