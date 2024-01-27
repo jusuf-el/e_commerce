@@ -6,18 +6,20 @@ class PrimaryButton extends StatelessWidget {
   final String text;
   final bool filled;
   final String? icon;
+  final Function() onPressed;
 
   const PrimaryButton({
     super.key,
     required this.text,
     this.filled = true,
     this.icon,
+    required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: onPressed,
       minWidth: double.infinity,
       elevation: 0.0,
       color: filled ? ColorConstants.main : Colors.white,

@@ -325,11 +325,15 @@ class ProductDetailsView extends StatelessWidget {
                                               height: 1.0,
                                             ),
                                             const SizedBox(height: 24.0),
-                                            const PrimaryButton(text: 'Save'),
+                                            PrimaryButton(
+                                              text: 'Save',
+                                              onPressed: () {},
+                                            ),
                                             const SizedBox(height: 16.0),
-                                            const PrimaryButton(
+                                            PrimaryButton(
                                               text: 'Cancel',
                                               filled: false,
+                                              onPressed: () {},
                                             ),
                                           ],
                                         ),
