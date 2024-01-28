@@ -102,19 +102,20 @@ class _ProductsViewState extends State<ProductsView> {
             ),
             const SizedBox(width: 11.0),
             StreamBuilder<String>(
-                stream: filterBloc.filterCategoryStream,
-                initialData: filterBloc.filterCategory,
-                builder: (BuildContext context,
-                    AsyncSnapshot<String> selectedCategorySnapshot) {
-                  String selectedCategory = selectedCategorySnapshot.data ?? '';
-                  return ZenCircularButton(
-                    onTap: () =>
-                        productsBloc.onFilterPressed(context, filterBloc),
-                    icon: Assets.filter,
-                    displayNotification:
-                        selectedCategory != FilterConstants.defaultCategory,
-                  );
-                }),
+              stream: filterBloc.filterCategoryStream,
+              initialData: filterBloc.filterCategory,
+              builder: (BuildContext context,
+                  AsyncSnapshot<String> selectedCategorySnapshot) {
+                String selectedCategory = selectedCategorySnapshot.data ?? '';
+                return ZenCircularButton(
+                  onTap: () =>
+                      productsBloc.onFilterPressed(context, filterBloc),
+                  icon: Assets.filter,
+                  displayNotification:
+                      selectedCategory != FilterConstants.defaultCategory,
+                );
+              },
+            ),
           ],
         ),
       );
