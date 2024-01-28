@@ -1,5 +1,6 @@
 import 'package:e_commerce/data/constants/assets.dart';
 import 'package:e_commerce/data/constants/color_constants.dart';
+import 'package:e_commerce/utils/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:svg_flutter/svg_flutter.dart';
 
@@ -60,7 +61,7 @@ class PrimaryDropdown extends StatelessWidget {
         ),
       ),
       label: Text(
-        value,
+        value.capitalize(),
         style: const TextStyle(
           fontSize: 13.0,
           color: ColorConstants.dark,
@@ -88,7 +89,7 @@ class PrimaryDropdown extends StatelessWidget {
           return DropdownMenuEntry(
             value: items[index],
             labelWidget: Text(
-              items[index],
+              items[index].capitalize(),
               style: const TextStyle(
                 fontSize: 13.0,
                 color: ColorConstants.dark,

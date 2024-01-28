@@ -1,20 +1,23 @@
-import 'package:e_commerce/data/constants/assets.dart';
 import 'package:e_commerce/data/constants/color_constants.dart';
 import 'package:e_commerce/data/constants/filter_constants.dart';
 import 'package:e_commerce/data/models/sort.dart';
-import 'package:e_commerce/data/reusable_widgets/primary_button.dart';
+import 'package:e_commerce/data/reusable_widgets/zen_button.dart';
+import 'package:e_commerce/data/reusable_widgets/zen_divider.dart';
 import 'package:e_commerce/modules/products/blocs/filter_bloc.dart';
 import 'package:e_commerce/modules/products/blocs/products_bloc.dart';
 import 'package:e_commerce/utils/extensions/string_extensions.dart';
+import 'package:e_commerce/utils/services/modal_service.dart';
 import 'package:flutter/material.dart';
-import 'package:svg_flutter/svg_flutter.dart';
 
 class FilterModal extends StatelessWidget {
   final FilterBloc filterBloc;
   final ProductsBloc productsBloc;
 
-  const FilterModal(
-      {super.key, required this.filterBloc, required this.productsBloc});
+  const FilterModal({
+    super.key,
+    required this.filterBloc,
+    required this.productsBloc,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,214 +28,25 @@ class FilterModal extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: SvgPicture.asset(Assets.dragHandle),
-          ),
+          ModalService.modalDragHandle(),
           const SizedBox(height: 24.0),
-          const Text(
-            'Filter',
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.w600,
-              color: ColorConstants.main,
-              letterSpacing: -0.4,
-            ),
-          ),
+          ModalService.modalTitle('Filter'),
           const SizedBox(height: 16.0),
-          const Divider(
-            color: ColorConstants.neutral,
-            thickness: 1.0,
-            height: 1.0,
-          ),
+          const ZenDivider(),
           const SizedBox(height: 24.0),
-          const Text(
-            'Category',
-            style: TextStyle(
-              fontSize: 17.0,
-              fontWeight: FontWeight.w600,
-              color: ColorConstants.dark,
-              letterSpacing: -0.34,
-            ),
-          ),
+          filterSectionTitle('Category'),
           const SizedBox(height: 8.0),
-          StreamBuilder<List<String>>(
-              stream: filterBloc.categoriesStream,
-              initialData: filterBloc.categories,
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                List<String> categories = snapshot.data ?? [];
-                return Wrap(
-                  direction: Axis.horizontal,
-                  spacing: 8.0,
-                  runSpacing: 8.0,
-                  children: List.generate(
-                    categories.length,
-                    (index) {
-                      return StreamBuilder<String>(
-                        stream: filterBloc.filterCategoryStream,
-                        initialData: filterBloc.filterCategory,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String> filterCategorySnapshot) {
-                          String selectedCategory =
-                              filterCategorySnapshot.data ?? '';
-                          return InkWell(
-                            onTap: () => filterBloc
-                                .onFilterCategoryChanged(categories[index]),
-                            child: Container(
-                              padding: const EdgeInsets.all(12.0),
-                              decoration: BoxDecoration(
-                                color: ColorConstants.light,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(4.0)),
-                                border: selectedCategory == categories[index]
-                                    ? Border.all(
-                                        color: ColorConstants.third,
-                                        width: 1.0,
-                                        strokeAlign:
-                                            BorderSide.strokeAlignInside,
-                                      )
-                                    : const Border.fromBorderSide(
-                                        BorderSide.none),
-                              ),
-                              child: Text(
-                                categories[index].capitalize(),
-                                style: const TextStyle(
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.w400,
-                                  color: ColorConstants.dark,
-                                  letterSpacing: -0.26,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                );
-              }),
+          filterCategoriesSectionOptions,
           const SizedBox(height: 16.0),
-          const Text(
-            'Sort by price',
-            style: TextStyle(
-              fontSize: 17.0,
-              fontWeight: FontWeight.w600,
-              color: ColorConstants.dark,
-              letterSpacing: -0.34,
-            ),
-          ),
+          filterSectionTitle('Sort by price'),
           const SizedBox(height: 8.0),
-          Wrap(
-            direction: Axis.horizontal,
-            spacing: 8.0,
-            runSpacing: 8.0,
-            children: List.generate(
-              FilterConstants.priceSorting.length,
-              (index) {
-                return StreamBuilder<Sort>(
-                  stream: filterBloc.filterSortStream,
-                  initialData: filterBloc.filterSort,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<Sort> filterSortSnapshot) {
-                    Sort selectedSort = filterSortSnapshot.data ?? Sort();
-                    return InkWell(
-                      onTap: () => filterBloc.onFilterSortChanged(
-                          FilterConstants.priceSorting[index]),
-                      child: Container(
-                        padding: const EdgeInsets.all(12.0),
-                        decoration: BoxDecoration(
-                          color: ColorConstants.light,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4.0)),
-                          border: selectedSort.value ==
-                                  FilterConstants.priceSorting[index].value
-                              ? Border.all(
-                                  color: ColorConstants.third,
-                                  width: 1.0,
-                                  strokeAlign: BorderSide.strokeAlignInside,
-                                )
-                              : const Border.fromBorderSide(BorderSide.none),
-                        ),
-                        child: Text(
-                          FilterConstants.priceSorting[index].title,
-                          style: const TextStyle(
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.w400,
-                            color: ColorConstants.dark,
-                            letterSpacing: -0.26,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+          filterPriceSortSectionOptions,
           const SizedBox(height: 16.0),
-          const Text(
-            'Number of results',
-            style: TextStyle(
-              fontSize: 17.0,
-              fontWeight: FontWeight.w600,
-              color: ColorConstants.dark,
-              letterSpacing: -0.34,
-            ),
-          ),
+          filterSectionTitle('Number of results'),
           const SizedBox(height: 8.0),
-          Wrap(
-            direction: Axis.horizontal,
-            spacing: 8.0,
-            runSpacing: 8.0,
-            children: List.generate(
-              FilterConstants.resultNumbers.length,
-              (index) {
-                return StreamBuilder<int>(
-                  stream: filterBloc.filterLimitStream,
-                  initialData: filterBloc.filterLimit,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<int> filterLimitSnapshot) {
-                    int selectedLimit = filterLimitSnapshot.data ?? 10;
-                    return InkWell(
-                      onTap: () => filterBloc.onFilterLimitChanged(
-                          FilterConstants.resultNumbers[index]),
-                      child: Container(
-                        padding: const EdgeInsets.all(12.0),
-                        decoration: BoxDecoration(
-                          color: ColorConstants.light,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4.0)),
-                          border: selectedLimit ==
-                                  FilterConstants.resultNumbers[index]
-                              ? Border.all(
-                                  color: ColorConstants.third,
-                                  width: 1.0,
-                                  strokeAlign: BorderSide.strokeAlignInside,
-                                )
-                              : const Border.fromBorderSide(BorderSide.none),
-                        ),
-                        child: Text(
-                          '${FilterConstants.resultNumbers[index]}',
-                          style: const TextStyle(
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.w400,
-                            color: ColorConstants.dark,
-                            letterSpacing: -0.26,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+          filterResultsLimitSectionOptions,
           const SizedBox(height: 32.0),
-          const Divider(
-            color: ColorConstants.neutral,
-            thickness: 1.0,
-            height: 1.0,
-          ),
+          const ZenDivider(),
           const SizedBox(height: 24.0),
           PrimaryButton(
             text: 'Apply Filter',
@@ -250,4 +64,110 @@ class FilterModal extends StatelessWidget {
       ),
     );
   }
+
+  Widget filterSectionTitle(String title) => Text(
+        title,
+        style: const TextStyle(
+          fontSize: 17.0,
+          fontWeight: FontWeight.w600,
+          color: ColorConstants.dark,
+          letterSpacing: -0.34,
+        ),
+      );
+
+  Widget get filterCategoriesSectionOptions => StreamBuilder<List<String>>(
+        stream: filterBloc.categoriesStream,
+        initialData: filterBloc.categories,
+        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+          List<String> categories = snapshot.data ?? [];
+          return StreamBuilder<String>(
+            stream: filterBloc.filterCategoryStream,
+            initialData: filterBloc.filterCategory,
+            builder: (BuildContext context,
+                AsyncSnapshot<String> filterCategorySnapshot) {
+              String selectedCategory = filterCategorySnapshot.data ?? '';
+              return filterSectionOptionsList(
+                categories,
+                (String category) =>
+                    filterBloc.onFilterCategoryChanged(category),
+                selectedCategory,
+              );
+            },
+          );
+        },
+      );
+
+  Widget get filterPriceSortSectionOptions => StreamBuilder<Sort>(
+        stream: filterBloc.filterSortStream,
+        initialData: filterBloc.filterSort,
+        builder:
+            (BuildContext context, AsyncSnapshot<Sort> filterSortSnapshot) {
+          Sort selectedSort = filterSortSnapshot.data ?? Sort();
+          return filterSectionOptionsList(
+            FilterConstants.priceSorting.map((e) => e.title).toList(),
+            (String sort) => filterBloc.onFilterSortChanged(FilterConstants
+                .priceSorting
+                .firstWhere((e) => e.title == sort)),
+            selectedSort.title,
+          );
+        },
+      );
+
+  Widget get filterResultsLimitSectionOptions => StreamBuilder<int>(
+        stream: filterBloc.filterLimitStream,
+        initialData: filterBloc.filterLimit,
+        builder:
+            (BuildContext context, AsyncSnapshot<int> filterLimitSnapshot) {
+          int selectedLimit = filterLimitSnapshot.data ?? 10;
+          return filterSectionOptionsList(
+            FilterConstants.resultNumbers.map((e) => e.toString()).toList(),
+            (String limit) => filterBloc.onFilterLimitChanged(int.parse(limit)),
+            selectedLimit.toString(),
+          );
+        },
+      );
+
+  Widget filterSectionOptionsList(List<String> options,
+          Function(String) onOptionPressed, String selectedOption) =>
+      Wrap(
+        direction: Axis.horizontal,
+        spacing: 8.0,
+        runSpacing: 8.0,
+        children: List.generate(
+          options.length,
+          (index) {
+            return filterOptionBadge((option) => onOptionPressed(option),
+                options[index], selectedOption);
+          },
+        ),
+      );
+
+  Widget filterOptionBadge(Function(String) onOptionPressed, String option,
+          String selectedOption) =>
+      InkWell(
+        onTap: () => onOptionPressed(option),
+        child: Container(
+          padding: const EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+            color: ColorConstants.light,
+            borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+            border: selectedOption == option
+                ? Border.all(
+                    color: ColorConstants.third,
+                    width: 1.0,
+                    strokeAlign: BorderSide.strokeAlignInside,
+                  )
+                : const Border.fromBorderSide(BorderSide.none),
+          ),
+          child: Text(
+            option.capitalize(),
+            style: const TextStyle(
+              fontSize: 13.0,
+              fontWeight: FontWeight.w400,
+              color: ColorConstants.dark,
+              letterSpacing: -0.26,
+            ),
+          ),
+        ),
+      );
 }

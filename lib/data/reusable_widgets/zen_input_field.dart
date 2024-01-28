@@ -9,6 +9,7 @@ class InputField extends StatelessWidget {
   final double borderRadius;
   final Color? borderColor;
   final int? maxLines;
+  final TextInputType keyboardType;
 
   const InputField({
     super.key,
@@ -19,12 +20,14 @@ class InputField extends StatelessWidget {
     this.borderRadius = 50.0,
     this.borderColor,
     this.maxLines = 1,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: textEditingController,
+      keyboardType: keyboardType,
       style: const TextStyle(
         fontSize: 13.0,
         color: ColorConstants.dark,

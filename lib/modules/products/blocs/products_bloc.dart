@@ -1,12 +1,13 @@
 import 'dart:async';
-import 'package:e_commerce/data/constants/color_constants.dart';
 import 'package:e_commerce/data/constants/filter_constants.dart';
 import 'package:e_commerce/data/models/product.dart';
 import 'package:e_commerce/data/models/sort.dart';
 import 'package:e_commerce/modules/products/blocs/filter_bloc.dart';
 import 'package:e_commerce/modules/products/widgets/filter_modal.dart';
+import 'package:e_commerce/modules/products/widgets/product_more_modal.dart';
 import 'package:e_commerce/utils/services/api_service.dart';
 import 'package:e_commerce/utils/bloc/bloc_base.dart';
+import 'package:e_commerce/utils/services/modal_service.dart';
 import 'package:flutter/material.dart';
 
 class ProductsBloc implements BlocBase {
@@ -95,40 +96,44 @@ class ProductsBloc implements BlocBase {
     filterBloc.onFilterCategoryChanged(selectedCategory);
     filterBloc.onFilterSortChanged(sort);
     filterBloc.onFilterLimitChanged(limit);
-    onModalCalled(
+
+    ModalService.openModal(
+        context, FilterModal(filterBloc: filterBloc, productsBloc: this));
+  }
+
+  onProductMorePressed(BuildContext context, Product product,
+      Function() onEditProductPressed, Function() onDeleteProductPressed) {
+    ModalService.openModal(
       context,
-      FilterModal(filterBloc: filterBloc, productsBloc: this),
+      ProductMoreModal(
+        product: product,
+        onEditPressed: onEditProductPressed,
+        onDeletePressed: onDeleteProductPressed,
+      ),
     );
   }
 
-  void onModalCalled(BuildContext context, Widget child) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return child;
-      },
-      constraints: BoxConstraints(
-        minWidth: double.infinity,
-        maxHeight: MediaQuery.of(context).size.height,
-      ),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        ),
-        side: BorderSide.none,
-      ),
-      isScrollControlled: true,
-      backgroundColor: ColorConstants.lightGrey,
-    );
+  // TODO - finish this method
+  onEditProductPressed(BuildContext context, int? productId) async {
+    // if (productId != null) {
+    //   if (context.mounted) {
+    //     Navigator.of(context).pop();
+    //   }
+    //   _loading = true;
+    //   _loadingSink.add(_loading);
+    //   await ApiService.deleteProduct(productId);
+    //   getProducts();
+    // }
   }
 
   onDeleteProductPressed(BuildContext context, int? productId) async {
     if (productId != null) {
-      await ApiService.deleteProduct(productId);
       if (context.mounted) {
         Navigator.of(context).pop();
       }
+      _loading = true;
+      _loadingSink.add(_loading);
+      await ApiService.deleteProduct(productId);
       getProducts();
     }
   }
