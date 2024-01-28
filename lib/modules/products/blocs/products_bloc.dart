@@ -3,19 +3,34 @@ import 'package:e_commerce/data/constants/color_constants.dart';
 import 'package:e_commerce/data/constants/filter_constants.dart';
 import 'package:e_commerce/data/models/product.dart';
 import 'package:e_commerce/data/models/sort.dart';
-import 'package:e_commerce/modules/products/blocs/categories_bloc.dart';
+import 'package:e_commerce/modules/products/blocs/filter_bloc.dart';
 import 'package:e_commerce/modules/products/widgets/filter_modal.dart';
 import 'package:e_commerce/utils/services/api_service.dart';
 import 'package:e_commerce/utils/bloc/bloc_base.dart';
 import 'package:flutter/material.dart';
 
 class ProductsBloc implements BlocBase {
+  bool _loading = true;
+  bool get loading => _loading;
+  final StreamController<bool> _loadingController = StreamController<bool>();
+  StreamSink<bool> get _loadingSink => _loadingController.sink;
+  Stream<bool> get loadingStream => _loadingController.stream;
+
   List<Product> _products = [];
   List<Product> get products => _products;
   final StreamController<List<Product>> _productsController =
-      StreamController<List<Product>>();
+      StreamController<List<Product>>.broadcast();
   StreamSink<List<Product>> get _productsSink => _productsController.sink;
   Stream<List<Product>> get productsStream => _productsController.stream;
+
+  String _selectedCategory = 'All';
+  String get selectedCategory => _selectedCategory;
+  final StreamController<String> _selectedCategoryController =
+      StreamController<String>.broadcast();
+  StreamSink<String> get _selectedCategorySink =>
+      _selectedCategoryController.sink;
+  Stream<String> get selectedCategoryStream =>
+      _selectedCategoryController.stream;
 
   Sort _sort = FilterConstants.priceSorting.first;
   Sort get sort => _sort;
@@ -23,25 +38,11 @@ class ProductsBloc implements BlocBase {
   StreamSink<Sort> get _sortSink => _sortController.sink;
   Stream<Sort> get sortStream => _sortController.stream;
 
-  Sort _filterSort = FilterConstants.priceSorting.first;
-  Sort get filterSort => _filterSort;
-  final StreamController<Sort> _filterSortController =
-      StreamController<Sort>.broadcast();
-  StreamSink<Sort> get _filterSortSink => _filterSortController.sink;
-  Stream<Sort> get filterSortStream => _filterSortController.stream;
-
   int _limit = FilterConstants.resultNumbers.first;
   int get limit => _limit;
   final StreamController<int> _limitController = StreamController<int>();
   StreamSink<int> get _limitSink => _limitController.sink;
   Stream<int> get limitStream => _limitController.stream;
-
-  int _filterLimit = FilterConstants.resultNumbers.first;
-  int get filterLimit => _filterLimit;
-  final StreamController<int> _filterLimitController =
-      StreamController<int>.broadcast();
-  StreamSink<int> get _filterLimitSink => _filterLimitController.sink;
-  Stream<int> get filterLimitStream => _filterLimitController.stream;
 
   String _search = '';
   String get search => _search;
@@ -51,18 +52,28 @@ class ProductsBloc implements BlocBase {
   Stream<String> get searchStream => _searchController.stream;
 
   ProductsBloc() {
+    _loadingSink.add(_loading);
     _productsSink.add(_products);
+    _selectedCategorySink.add(_selectedCategory);
     _sortSink.add(_sort);
-    _filterSortSink.add(_filterSort);
     _limitSink.add(_limit);
-    _filterLimitSink.add(_filterLimit);
     _searchSink.add(_search);
   }
 
-  void getProducts(CategoriesBloc categoriesBloc) async {
-    _products = await ApiService.fetchProducts(
-        categoriesBloc.selectedCategory, limit, sort);
+  void getProducts() async {
+    _loading = true;
+    _loadingSink.add(_loading);
+    _products = await ApiService.fetchProducts(selectedCategory, limit, sort);
     _productsSink.add(_products);
+    _loading = false;
+    _loadingSink.add(_loading);
+  }
+
+  void onCategoryChanged(String category, FilterBloc filterBloc) {
+    _selectedCategory = category;
+    _selectedCategorySink.add(_selectedCategory);
+    filterBloc.onFilterCategoryChanged(category);
+    getProducts();
   }
 
   void onSortChanged(Sort newSort) {
@@ -70,19 +81,9 @@ class ProductsBloc implements BlocBase {
     _sortSink.add(_sort);
   }
 
-  void onFilterSortChanged(Sort newSort) {
-    _filterSort = newSort;
-    _filterSortSink.add(_filterSort);
-  }
-
   void onLimitChanged(int newLimit) {
     _limit = newLimit;
     _limitSink.add(_limit);
-  }
-
-  void onFilterLimitChanged(int newLimit) {
-    _filterLimit = newLimit;
-    _filterLimitSink.add(_filterLimit);
   }
 
   void onSearchChanged(String input) {
@@ -90,28 +91,14 @@ class ProductsBloc implements BlocBase {
     _searchSink.add(_search);
   }
 
-  void onFilterPressed(BuildContext context, CategoriesBloc categoriesBloc) {
-    categoriesBloc.onFilterCategoryChanged(categoriesBloc.selectedCategory);
-    onFilterSortChanged(sort);
-    onFilterLimitChanged(limit);
+  void onFilterPressed(BuildContext context, FilterBloc filterBloc) {
+    filterBloc.onFilterCategoryChanged(selectedCategory);
+    filterBloc.onFilterSortChanged(sort);
+    filterBloc.onFilterLimitChanged(limit);
     onModalCalled(
       context,
-      FilterModal(categoriesBloc: categoriesBloc, productsBloc: this),
+      FilterModal(filterBloc: filterBloc, productsBloc: this),
     );
-  }
-
-  onCancelFilterPressed(BuildContext context, CategoriesBloc categoriesBloc) {
-    categoriesBloc.onFilterCategoryChanged(categoriesBloc.selectedCategory);
-    onFilterSortChanged(sort);
-    onFilterLimitChanged(limit);
-    Navigator.of(context).pop();
-  }
-
-  onApplyFilterPressed(BuildContext context, CategoriesBloc categoriesBloc) {
-    onSortChanged(filterSort);
-    onLimitChanged(filterLimit);
-    categoriesBloc.onCategoryChanged(categoriesBloc.filterCategory, this);
-    Navigator.of(context).pop();
   }
 
   void onModalCalled(BuildContext context, Widget child) {
@@ -136,6 +123,16 @@ class ProductsBloc implements BlocBase {
     );
   }
 
+  onDeleteProductPressed(BuildContext context, int? productId) async {
+    if (productId != null) {
+      await ApiService.deleteProduct(productId);
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+      getProducts();
+    }
+  }
+
   @override
   void dispose() {
     _productsController.close();
@@ -143,5 +140,3 @@ class ProductsBloc implements BlocBase {
     _searchController.close();
   }
 }
-
-// final ProductsBloc productsBloc = ProductsBloc();

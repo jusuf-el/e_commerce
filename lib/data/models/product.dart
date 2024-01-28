@@ -1,3 +1,5 @@
+import 'package:e_commerce/data/models/rating.dart';
+
 class Product {
   int? id;
   String title = '';
@@ -5,6 +7,7 @@ class Product {
   String category = '';
   String description = '';
   String image = '';
+  Rating rating = Rating();
 
   Product({
     this.id,
@@ -13,7 +16,8 @@ class Product {
     this.category = '',
     this.description = '',
     this.image = '',
-  });
+    rating,
+  }) : rating = rating ?? Rating();
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -22,6 +26,7 @@ class Product {
     category = json['category'] ?? '';
     description = json['description'] ?? '';
     image = json['image'] ?? '';
+    rating = Rating.fromJson(json['rating'] ?? {});
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +37,7 @@ class Product {
     data['category'] = category;
     data['description'] = description;
     data['image'] = image;
+    data['rating'] = rating;
     return data;
   }
 }

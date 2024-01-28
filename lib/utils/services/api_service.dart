@@ -30,8 +30,8 @@ class ApiService {
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        final List<dynamic> categories = json.decode(response.body);
-        mappedProducts = categories.map((e) => Product.fromJson(e)).toList();
+        final List<dynamic> products = json.decode(response.body);
+        mappedProducts = products.map((e) => Product.fromJson(e)).toList();
       } else {
         // TODO - DISPLAYING ERROR MESSAGE
         if (kDebugMode) {
@@ -47,6 +47,60 @@ class ApiService {
     }
 
     return mappedProducts;
+  }
+
+  static Future<Product> fetchProductById(int id) async {
+    Product mappedProduct = Product();
+    String url = '${Endpoints.baseUrl}${Endpoints.products}/$id';
+
+    print(url);
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        mappedProduct = Product.fromJson(json.decode(response.body));
+      } else {
+        // TODO - DISPLAYING ERROR MESSAGE
+        if (kDebugMode) {
+          print('GET POSTS ERROR WITH CODE: ${response.statusCode}');
+        }
+      }
+    } catch (e) {
+      // TODO - DISPLAYING ERROR MESSAGE
+      if (kDebugMode) {
+        print('GET POSTS ERROR: $e');
+        rethrow;
+      }
+    }
+
+    return mappedProduct;
+  }
+
+  static Future<Product> deleteProduct(int id) async {
+    Product mappedProduct = Product();
+    String url = '${Endpoints.baseUrl}${Endpoints.products}/$id';
+
+    print(url);
+
+    try {
+      final response = await http.delete(Uri.parse(url));
+      if (response.statusCode == 200) {
+        mappedProduct = Product.fromJson(json.decode(response.body));
+      } else {
+        // TODO - DISPLAYING ERROR MESSAGE
+        if (kDebugMode) {
+          print('GET POSTS ERROR WITH CODE: ${response.statusCode}');
+        }
+      }
+    } catch (e) {
+      // TODO - DISPLAYING ERROR MESSAGE
+      if (kDebugMode) {
+        print('GET POSTS ERROR: $e');
+        rethrow;
+      }
+    }
+
+    return mappedProduct;
   }
 
   static Future<List<String>> fetchCategories() async {

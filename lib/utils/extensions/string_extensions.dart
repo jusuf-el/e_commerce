@@ -1,5 +1,5 @@
 extension StringExtensions on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${substring(1)}";
+    return isEmpty ? '' : "${this[0].toUpperCase()}${substring(1)}";
   }
 }

@@ -1,4 +1,4 @@
-import 'package:e_commerce/modules/products/blocs/categories_bloc.dart';
+import 'package:e_commerce/modules/products/blocs/filter_bloc.dart';
 import 'package:e_commerce/modules/products/blocs/products_bloc.dart';
 import 'package:e_commerce/modules/products/view/products_view.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       bloc: ProductsBloc(),
       child: BlocProvider(
-        bloc: CategoriesBloc(),
+        bloc: FilterBloc(),
         child: MaterialApp(
           title: 'E-Commerce',
           debugShowCheckedModeBanner: false,

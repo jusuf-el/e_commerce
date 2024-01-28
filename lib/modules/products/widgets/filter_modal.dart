@@ -3,18 +3,18 @@ import 'package:e_commerce/data/constants/color_constants.dart';
 import 'package:e_commerce/data/constants/filter_constants.dart';
 import 'package:e_commerce/data/models/sort.dart';
 import 'package:e_commerce/data/reusable_widgets/primary_button.dart';
-import 'package:e_commerce/modules/products/blocs/categories_bloc.dart';
+import 'package:e_commerce/modules/products/blocs/filter_bloc.dart';
 import 'package:e_commerce/modules/products/blocs/products_bloc.dart';
 import 'package:e_commerce/utils/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:svg_flutter/svg_flutter.dart';
 
 class FilterModal extends StatelessWidget {
-  final CategoriesBloc categoriesBloc;
+  final FilterBloc filterBloc;
   final ProductsBloc productsBloc;
 
   const FilterModal(
-      {super.key, required this.categoriesBloc, required this.productsBloc});
+      {super.key, required this.filterBloc, required this.productsBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +56,8 @@ class FilterModal extends StatelessWidget {
           ),
           const SizedBox(height: 8.0),
           StreamBuilder<List<String>>(
-              stream: categoriesBloc.categoriesStream,
-              initialData: categoriesBloc.categories,
+              stream: filterBloc.categoriesStream,
+              initialData: filterBloc.categories,
               builder:
                   (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                 List<String> categories = snapshot.data ?? [];
@@ -69,14 +69,14 @@ class FilterModal extends StatelessWidget {
                     categories.length,
                     (index) {
                       return StreamBuilder<String>(
-                        stream: categoriesBloc.filterCategoryStream,
-                        initialData: categoriesBloc.filterCategory,
+                        stream: filterBloc.filterCategoryStream,
+                        initialData: filterBloc.filterCategory,
                         builder: (BuildContext context,
                             AsyncSnapshot<String> filterCategorySnapshot) {
                           String selectedCategory =
                               filterCategorySnapshot.data ?? '';
                           return InkWell(
-                            onTap: () => categoriesBloc
+                            onTap: () => filterBloc
                                 .onFilterCategoryChanged(categories[index]),
                             child: Container(
                               padding: const EdgeInsets.all(12.0),
@@ -130,13 +130,13 @@ class FilterModal extends StatelessWidget {
               FilterConstants.priceSorting.length,
               (index) {
                 return StreamBuilder<Sort>(
-                  stream: productsBloc.filterSortStream,
-                  initialData: productsBloc.filterSort,
+                  stream: filterBloc.filterSortStream,
+                  initialData: filterBloc.filterSort,
                   builder: (BuildContext context,
                       AsyncSnapshot<Sort> filterSortSnapshot) {
                     Sort selectedSort = filterSortSnapshot.data ?? Sort();
                     return InkWell(
-                      onTap: () => productsBloc.onFilterSortChanged(
+                      onTap: () => filterBloc.onFilterSortChanged(
                           FilterConstants.priceSorting[index]),
                       child: Container(
                         padding: const EdgeInsets.all(12.0),
@@ -188,13 +188,13 @@ class FilterModal extends StatelessWidget {
               FilterConstants.resultNumbers.length,
               (index) {
                 return StreamBuilder<int>(
-                  stream: productsBloc.filterLimitStream,
-                  initialData: productsBloc.filterLimit,
+                  stream: filterBloc.filterLimitStream,
+                  initialData: filterBloc.filterLimit,
                   builder: (BuildContext context,
                       AsyncSnapshot<int> filterLimitSnapshot) {
                     int selectedLimit = filterLimitSnapshot.data ?? 10;
                     return InkWell(
-                      onTap: () => productsBloc.onFilterLimitChanged(
+                      onTap: () => filterBloc.onFilterLimitChanged(
                           FilterConstants.resultNumbers[index]),
                       child: Container(
                         padding: const EdgeInsets.all(12.0),
@@ -237,14 +237,14 @@ class FilterModal extends StatelessWidget {
           PrimaryButton(
             text: 'Apply Filter',
             onPressed: () =>
-                productsBloc.onApplyFilterPressed(context, categoriesBloc),
+                filterBloc.onApplyFilterPressed(context, productsBloc),
           ),
           const SizedBox(height: 16.0),
           PrimaryButton(
             text: 'Cancel',
             filled: false,
             onPressed: () =>
-                productsBloc.onCancelFilterPressed(context, categoriesBloc),
+                filterBloc.onCancelFilterPressed(context, productsBloc),
           ),
         ],
       ),
