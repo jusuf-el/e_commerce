@@ -1,5 +1,6 @@
 import 'package:e_commerce/data/constants/color_constants.dart';
 import 'package:e_commerce/data/constants/filter_constants.dart';
+import 'package:e_commerce/data/constants/strings.dart';
 import 'package:e_commerce/data/models/sort.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_button.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_divider.dart';
@@ -30,32 +31,32 @@ class FilterModal extends StatelessWidget {
         children: [
           ModalService.modalDragHandle(),
           const SizedBox(height: 24.0),
-          ModalService.modalTitle('Filter'),
+          ModalService.modalTitle(Strings.filter),
           const SizedBox(height: 16.0),
           const ZenDivider(),
           const SizedBox(height: 24.0),
-          filterSectionTitle('Category'),
+          filterSectionTitle(Strings.category),
           const SizedBox(height: 8.0),
           filterCategoriesSectionOptions,
           const SizedBox(height: 16.0),
-          filterSectionTitle('Sort by price'),
+          filterSectionTitle(Strings.sortByPrice),
           const SizedBox(height: 8.0),
           filterPriceSortSectionOptions,
           const SizedBox(height: 16.0),
-          filterSectionTitle('Number of results'),
+          filterSectionTitle(Strings.numberOfResults),
           const SizedBox(height: 8.0),
           filterResultsLimitSectionOptions,
           const SizedBox(height: 32.0),
           const ZenDivider(),
           const SizedBox(height: 24.0),
           PrimaryButton(
-            text: 'Apply Filter',
+            text: Strings.applyFilter,
             onPressed: () =>
                 filterBloc.onApplyFilterPressed(context, productsBloc),
           ),
           const SizedBox(height: 16.0),
           PrimaryButton(
-            text: 'Cancel',
+            text: Strings.cancel,
             filled: false,
             onPressed: () =>
                 filterBloc.onCancelFilterPressed(context, productsBloc),

@@ -61,20 +61,22 @@ class ProductsBloc implements BlocBase {
     _searchSink.add(_search);
   }
 
-  void getProducts() async {
+  void getProducts(BuildContext context) async {
     _loading = true;
     _loadingSink.add(_loading);
-    _products = await ApiService.fetchProducts(selectedCategory, limit, sort);
+    _products =
+        await ApiService.fetchProducts(context, selectedCategory, limit, sort);
     _productsSink.add(_products);
     _loading = false;
     _loadingSink.add(_loading);
   }
 
-  void onCategoryChanged(String category, FilterBloc filterBloc) {
+  void onCategoryChanged(
+      BuildContext context, String category, FilterBloc filterBloc) {
     _selectedCategory = category;
     _selectedCategorySink.add(_selectedCategory);
     filterBloc.onFilterCategoryChanged(category);
-    getProducts();
+    getProducts(context);
   }
 
   void onSortChanged(Sort newSort) {
@@ -113,34 +115,26 @@ class ProductsBloc implements BlocBase {
     );
   }
 
-  // TODO - finish this method
-  onEditProductPressed(BuildContext context, int? productId) async {
-    // if (productId != null) {
-    //   if (context.mounted) {
-    //     Navigator.of(context).pop();
-    //   }
-    //   _loading = true;
-    //   _loadingSink.add(_loading);
-    //   await ApiService.deleteProduct(productId);
-    //   getProducts();
-    // }
-  }
-
   onDeleteProductPressed(BuildContext context, int? productId) async {
     if (productId != null) {
       if (context.mounted) {
         Navigator.of(context).pop();
       }
+      await ApiService.deleteProduct(context, productId);
       _loading = true;
       _loadingSink.add(_loading);
-      await ApiService.deleteProduct(productId);
-      getProducts();
+      if (context.mounted) {
+        getProducts(context);
+      }
     }
   }
 
   @override
   void dispose() {
+    _loadingController.close();
     _productsController.close();
+    _selectedCategoryController.close();
+    _sortController.close();
     _limitController.close();
     _searchController.close();
   }

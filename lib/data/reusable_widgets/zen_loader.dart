@@ -8,12 +8,14 @@ class ZenLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(padding),
-      child: const FittedBox(
-        fit: BoxFit.scaleDown,
-        child: CircularProgressIndicator(
-          color: ColorConstants.main,
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(padding),
+        child: const FittedBox(
+          fit: BoxFit.scaleDown,
+          child: CircularProgressIndicator(
+            color: ColorConstants.main,
+          ),
         ),
       ),
     );

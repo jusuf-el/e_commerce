@@ -1,45 +1,6 @@
-// import 'package:e_commerce/data/constants/assets.dart';
-// import 'package:e_commerce/data/constants/color_constants.dart';
-// import 'package:flutter/material.dart';
-// import 'package:svg_flutter/svg_flutter.dart';
-//
-// class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
-//   const PrimaryAppBar({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return
-//       AppBar(
-//       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-//       elevation: 0.0,
-//       forceMaterialTransparency: true,
-//       leading: IconButton(
-//         onPressed: () {},
-//         icon: SvgPicture.asset(
-//           Assets.arrowBack,
-//           width: 24.0,
-//           height: 24.0,
-//         ),
-//       ),
-//       title: const Text(
-//         'Products',
-//         style: TextStyle(
-//           fontSize: 18.0,
-//           fontWeight: FontWeight.w700,
-//           color: ColorConstants.baseBlack,
-//           letterSpacing: -0.36,
-//         ),
-//       ),
-//     );
-//   }
-//
-//   @override
-//   Size get preferredSize => AppBar().preferredSize;
-// }
-
 import 'package:e_commerce/data/constants/color_constants.dart';
+import 'package:e_commerce/data/reusable_widgets/zen_icon_button.dart';
 import 'package:flutter/material.dart';
-import 'package:svg_flutter/svg_flutter.dart';
 
 class ZenAppBar extends StatelessWidget {
   final String? leadingIcon, trailingIcon, title;
@@ -65,19 +26,9 @@ class ZenAppBar extends StatelessWidget {
             Row(
               children: [
                 if (leadingIcon != null)
-                  IconButton(
-                    style: const ButtonStyle(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    padding: EdgeInsets.zero,
-                    visualDensity: VisualDensity.compact,
-                    constraints: const BoxConstraints(),
+                  ZenIconButton(
+                    icon: leadingIcon!,
                     onPressed: onLeadingPressed ?? () {},
-                    icon: SvgPicture.asset(
-                      leadingIcon!,
-                      height: 24.0,
-                      width: 24.0,
-                    ),
                   ),
                 if (title != null)
                   Row(
@@ -97,23 +48,10 @@ class ZenAppBar extends StatelessWidget {
               ],
             ),
             if (trailingIcon != null)
-              IconButton(
-                style: const ButtonStyle(
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                padding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
-                constraints: const BoxConstraints(),
+              ZenIconButton(
+                icon: trailingIcon!,
                 onPressed: onTrailingPressed ?? () {},
-                icon: SvgPicture.asset(
-                  trailingIcon!,
-                  height: 24.0,
-                  width: 24.0,
-                  colorFilter: const ColorFilter.mode(
-                    ColorConstants.baseBlack,
-                    BlendMode.srcIn,
-                  ),
-                ),
+                iconColor: ColorConstants.baseBlack,
               ),
           ],
         ),

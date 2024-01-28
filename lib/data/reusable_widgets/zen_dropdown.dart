@@ -7,11 +7,13 @@ import 'package:svg_flutter/svg_flutter.dart';
 class PrimaryDropdown extends StatelessWidget {
   final String value;
   final List<String> items;
+  final Function(String) onChanged;
 
   const PrimaryDropdown({
     super.key,
     required this.value,
     required this.items,
+    required this.onChanged,
   });
 
   @override
@@ -48,6 +50,7 @@ class PrimaryDropdown extends StatelessWidget {
             Radius.circular(4.0),
           ),
         ),
+        floatingLabelBehavior: FloatingLabelBehavior.never,
         contentPadding: EdgeInsets.all(12.0),
         constraints: BoxConstraints(maxHeight: 48.0),
         filled: true,
@@ -60,6 +63,13 @@ class PrimaryDropdown extends StatelessWidget {
           fontWeight: FontWeight.w400,
         ),
       ),
+      textStyle: const TextStyle(
+        fontSize: 13.0,
+        color: ColorConstants.dark,
+        letterSpacing: -0.26,
+        fontWeight: FontWeight.w400,
+      ),
+      initialSelection: value.capitalize(),
       label: Text(
         value.capitalize(),
         style: const TextStyle(
@@ -83,6 +93,11 @@ class PrimaryDropdown extends StatelessWidget {
           width: 24.0,
         ),
       ),
+      onSelected: (selection) {
+        if (selection != null) {
+          onChanged(selection);
+        }
+      },
       dropdownMenuEntries: List.generate(
         items.length,
         (index) {
@@ -97,7 +112,7 @@ class PrimaryDropdown extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            label: items[index],
+            label: items[index].capitalize(),
           );
         },
       ),

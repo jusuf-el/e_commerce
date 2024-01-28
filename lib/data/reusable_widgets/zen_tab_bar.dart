@@ -16,27 +16,29 @@ class ZenTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 36.0,
-      margin: const EdgeInsets.only(left: 16.0),
-      padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        color: ColorConstants.light,
-      ),
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: const ClampingScrollPhysics(),
-        itemCount: tabs.length,
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        separatorBuilder: (context, index) => const SizedBox(width: 20.0),
-        itemBuilder: (context, index) {
-          return tabItem(tabs[index]);
-        },
-      ),
-    );
+    return tabs.isNotEmpty
+        ? Container(
+            width: double.infinity,
+            height: 36.0,
+            margin: const EdgeInsets.only(left: 16.0, top: 16.0),
+            padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              color: ColorConstants.light,
+            ),
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              itemCount: tabs.length,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              separatorBuilder: (context, index) => const SizedBox(width: 20.0),
+              itemBuilder: (context, index) {
+                return tabItem(tabs[index]);
+              },
+            ),
+          )
+        : const SizedBox();
   }
 
   Widget tabItem(String tab) => InkWell(

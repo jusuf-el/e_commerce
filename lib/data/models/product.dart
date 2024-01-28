@@ -40,4 +40,24 @@ class Product {
     data['rating'] = rating;
     return data;
   }
+
+  Product copyWith({
+    int? id,
+    String? title,
+    String? price,
+    String? category,
+    String? description,
+    String? image,
+    Rating? rating,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      price: price ?? this.price,
+      category: category ?? this.category,
+      description: description ?? this.description,
+      image: image ?? this.image,
+      rating: rating ?? this.rating,
+    );
+  }
 }

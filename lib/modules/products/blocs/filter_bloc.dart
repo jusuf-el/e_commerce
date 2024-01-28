@@ -41,7 +41,7 @@ class FilterBloc implements BlocBase {
   StreamSink<int> get _filterLimitSink => _filterLimitController.sink;
   Stream<int> get filterLimitStream => _filterLimitController.stream;
 
-  CategoriesBloc() {
+  FilterBloc() {
     _loadingSink.add(_loading);
     _categoriesSink.add(_categories);
     _filterCategorySink.add(_filterCategory);
@@ -49,14 +49,16 @@ class FilterBloc implements BlocBase {
     _filterLimitSink.add(_filterLimit);
   }
 
-  void getCategories(ProductsBloc productsBloc) async {
+  void getCategories(BuildContext context, ProductsBloc productsBloc) async {
     _loading = true;
     _loadingSink.add(_loading);
-    _categories = await ApiService.fetchCategories();
+    _categories = await ApiService.fetchCategories(context);
     _categoriesSink.add(_categories);
     _loading = false;
     _loadingSink.add(_loading);
-    productsBloc.getProducts();
+    if (context.mounted) {
+      productsBloc.getProducts(context);
+    }
   }
 
   void onFilterCategoryChanged(String category) {
@@ -84,7 +86,7 @@ class FilterBloc implements BlocBase {
   onApplyFilterPressed(BuildContext context, ProductsBloc productsBloc) {
     productsBloc.onSortChanged(filterSort);
     productsBloc.onLimitChanged(filterLimit);
-    productsBloc.onCategoryChanged(filterCategory, this);
+    productsBloc.onCategoryChanged(context, filterCategory, this);
     Navigator.of(context).pop();
   }
 

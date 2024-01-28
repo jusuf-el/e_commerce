@@ -1,10 +1,10 @@
 import 'package:e_commerce/data/constants/assets.dart';
+import 'package:e_commerce/data/constants/strings.dart';
 import 'package:e_commerce/data/models/product.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_button.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_divider.dart';
 import 'package:e_commerce/utils/services/modal_service.dart';
 import 'package:flutter/material.dart';
-import 'package:svg_flutter/svg_flutter.dart';
 
 class ProductMoreModal extends StatelessWidget {
   final Product product;
@@ -33,13 +33,13 @@ class ProductMoreModal extends StatelessWidget {
           const ZenDivider(),
           const SizedBox(height: 24.0),
           PrimaryButton(
-            text: 'Edit product',
+            text: Strings.editProduct,
             icon: Assets.edit,
             onPressed: onEditPressed,
           ),
           const SizedBox(height: 16.0),
           PrimaryButton(
-            text: 'Delete product',
+            text: Strings.deleteProduct,
             filled: false,
             icon: Assets.delete,
             onPressed: onDeletePressed,

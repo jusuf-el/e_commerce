@@ -1,9 +1,10 @@
 import 'package:e_commerce/data/constants/assets.dart';
-import 'package:e_commerce/data/constants/color_constants.dart';
+import 'package:e_commerce/data/constants/strings.dart';
 import 'package:e_commerce/data/models/product.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_circular_button.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_input_field.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_app_bar.dart';
+import 'package:e_commerce/data/reusable_widgets/zen_loader.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_tab_bar.dart';
 import 'package:e_commerce/modules/product_details/blocs/product_details_bloc.dart';
 import 'package:e_commerce/modules/product_details/view/product_details_view.dart';
@@ -27,13 +28,19 @@ class _ProductsViewState extends State<ProductsView> {
   late FilterBloc filterBloc;
   late ProductsBloc productsBloc;
 
-  onProductPressed(Product product) {
+  onProductPressed(Product product, {bool openEdit = false}) {
+    if (openEdit) {
+      Navigator.of(context).pop();
+    }
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => BlocProvider(
           bloc: ProductDetailsBloc(),
-          child:
-              ProductDetailsView(filterBloc: filterBloc, productId: product.id),
+          child: ProductDetailsView(
+            filterBloc: filterBloc,
+            productId: product.id,
+            openEdit: openEdit,
+          ),
         ),
       ),
     );
@@ -45,7 +52,7 @@ class _ProductsViewState extends State<ProductsView> {
     filterBloc = BlocProvider.of<FilterBloc>(context);
     productsBloc = BlocProvider.of<ProductsBloc>(context);
 
-    filterBloc.getCategories(productsBloc);
+    filterBloc.getCategories(context, productsBloc);
 
     searchInputController.addListener(() {
       productsBloc.onSearchChanged(searchInputController.text);
@@ -63,9 +70,9 @@ class _ProductsViewState extends State<ProductsView> {
           bool categoriesLoading = categoriesLoadingSnapshot.data ?? true;
           return Column(
             children: [
-              const ZenAppBar(leadingIcon: Assets.arrowBack, title: 'Products'),
+              const ZenAppBar(
+                  leadingIcon: Assets.arrowBack, title: Strings.products),
               searchAndFilterSection,
-              const SizedBox(height: 16.0),
               categoryFilterSection(categoriesLoading),
               productsSection,
             ],
@@ -82,7 +89,7 @@ class _ProductsViewState extends State<ProductsView> {
           children: [
             Expanded(
               child: InputField(
-                hintText: 'Search',
+                hintText: Strings.search,
                 textEditingController: searchInputController,
                 prefixIcon: SvgPicture.asset(
                   Assets.search,
@@ -118,8 +125,8 @@ class _ProductsViewState extends State<ProductsView> {
                 return ZenTabBar(
                   tabs: categories,
                   selectedTab: selectedCategory,
-                  onTabPressed: (category) =>
-                      productsBloc.onCategoryChanged(category, filterBloc),
+                  onTabPressed: (category) => productsBloc.onCategoryChanged(
+                      context, category, filterBloc),
                 );
               },
             );
@@ -133,13 +140,7 @@ class _ProductsViewState extends State<ProductsView> {
           initialData: productsBloc.loading,
           builder: (BuildContext context, AsyncSnapshot<bool> loadingSnapshot) {
             bool loading = loadingSnapshot.data ?? true;
-            return loading
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: ColorConstants.main,
-                    ),
-                  )
-                : productsList;
+            return loading ? const ZenLoader() : productsList;
           },
         ),
       );
@@ -173,7 +174,8 @@ class _ProductsViewState extends State<ProductsView> {
                     onMorePressed: () => productsBloc.onProductMorePressed(
                       context,
                       filteredProducts[index],
-                      () {},
+                      () => onProductPressed(filteredProducts[index],
+                          openEdit: true),
                       () => productsBloc.onDeleteProductPressed(
                           context, filteredProducts[index].id),
                     ),

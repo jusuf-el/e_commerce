@@ -23,6 +23,7 @@ class ModalService {
       ),
       isScrollControlled: true,
       backgroundColor: ColorConstants.lightGrey,
+      useSafeArea: true,
     );
   }
 

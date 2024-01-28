@@ -6,7 +6,7 @@ class PrimaryButton extends StatelessWidget {
   final String text;
   final bool filled;
   final String? icon;
-  final Function() onPressed;
+  final Function()? onPressed;
 
   const PrimaryButton({
     super.key,
@@ -23,6 +23,7 @@ class PrimaryButton extends StatelessWidget {
       minWidth: double.infinity,
       elevation: 0.0,
       color: filled ? ColorConstants.main : Colors.white,
+      disabledColor: ColorConstants.neutral,
       padding: const EdgeInsets.all(18.0),
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(4.0)),

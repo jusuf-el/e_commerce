@@ -1,5 +1,6 @@
 import 'package:e_commerce/data/constants/assets.dart';
 import 'package:e_commerce/data/constants/color_constants.dart';
+import 'package:e_commerce/data/constants/strings.dart';
 import 'package:e_commerce/data/models/product.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_icon_button.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_image_error_builder.dart';
@@ -97,7 +98,7 @@ class ProductCard extends StatelessWidget {
               ],
             ),
             Text(
-              '\$${product.price}',
+              '${Strings.dollarSign}${product.price}',
               style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w600,

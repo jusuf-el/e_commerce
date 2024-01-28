@@ -4,8 +4,14 @@ import 'package:svg_flutter/svg_flutter.dart';
 class ZenIconButton extends StatelessWidget {
   final String icon;
   final Function() onPressed;
+  final Color? iconColor;
 
-  const ZenIconButton({super.key, required this.icon, required this.onPressed});
+  const ZenIconButton({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+    this.iconColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +27,12 @@ class ZenIconButton extends StatelessWidget {
         icon,
         height: 24.0,
         width: 24.0,
+        colorFilter: iconColor == null
+            ? null
+            : ColorFilter.mode(
+                iconColor!,
+                BlendMode.srcIn,
+              ),
       ),
     );
   }
