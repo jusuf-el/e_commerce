@@ -1,4 +1,5 @@
 import 'package:e_commerce/data/constants/assets.dart';
+import 'package:e_commerce/data/constants/filter_constants.dart';
 import 'package:e_commerce/data/constants/strings.dart';
 import 'package:e_commerce/data/models/product.dart';
 import 'package:e_commerce/data/reusable_widgets/zen_circular_button.dart';
@@ -100,10 +101,20 @@ class _ProductsViewState extends State<ProductsView> {
               ),
             ),
             const SizedBox(width: 11.0),
-            ZenCircularButton(
-              onTap: () => productsBloc.onFilterPressed(context, filterBloc),
-              icon: Assets.filter,
-            ),
+            StreamBuilder<String>(
+                stream: filterBloc.filterCategoryStream,
+                initialData: filterBloc.filterCategory,
+                builder: (BuildContext context,
+                    AsyncSnapshot<String> selectedCategorySnapshot) {
+                  String selectedCategory = selectedCategorySnapshot.data ?? '';
+                  return ZenCircularButton(
+                    onTap: () =>
+                        productsBloc.onFilterPressed(context, filterBloc),
+                    icon: Assets.filter,
+                    displayNotification:
+                        selectedCategory != FilterConstants.defaultCategory,
+                  );
+                }),
           ],
         ),
       );

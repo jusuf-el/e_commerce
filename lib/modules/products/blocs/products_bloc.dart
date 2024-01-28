@@ -24,7 +24,7 @@ class ProductsBloc implements BlocBase {
   StreamSink<List<Product>> get _productsSink => _productsController.sink;
   Stream<List<Product>> get productsStream => _productsController.stream;
 
-  String _selectedCategory = 'All';
+  String _selectedCategory = FilterConstants.defaultCategory;
   String get selectedCategory => _selectedCategory;
   final StreamController<String> _selectedCategoryController =
       StreamController<String>.broadcast();

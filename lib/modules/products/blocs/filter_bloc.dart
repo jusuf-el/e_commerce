@@ -20,7 +20,7 @@ class FilterBloc implements BlocBase {
   StreamSink<List<String>> get _categoriesSink => _categoriesController.sink;
   Stream<List<String>> get categoriesStream => _categoriesController.stream;
 
-  String _filterCategory = 'All';
+  String _filterCategory = FilterConstants.defaultCategory;
   String get filterCategory => _filterCategory;
   final StreamController<String> _filterCategoryController =
       StreamController<String>.broadcast();

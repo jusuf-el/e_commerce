@@ -19,7 +19,7 @@ class ApiService {
           {'key': 'limit', 'value': limit},
           {'key': 'sort', 'value': sort.value},
         ]);
-    if (category != 'All') {
+    if (category != FilterConstants.defaultCategory) {
       url = Endpoints.baseUrl +
           Endpoints.productsByCategory +
           category +
